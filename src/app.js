@@ -15,9 +15,12 @@ import ArticleRouter from "./router/article.router.js";
 
 const app = express();
 const HttpServer = createServer(app)
+const allowedOrigins = [process.env.ORIGIN, "http://localhost:3000"]
+  .filter(Boolean)
+  .map((origin) => origin.trim().replace(/\/+$/, ""));
 
 app.use(cookieParser());
-app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 
 app.use("/auth", UserRouter);
@@ -26,7 +29,7 @@ app.use("/agent", AgentRouter);
 app.use("/article",ArticleRouter)
 const io = new Server(HttpServer,{
   cors:{
-    origin: process.env.ORIGIN, 
+    origin: allowedOrigins, 
     credentials: true 
   }
 })
