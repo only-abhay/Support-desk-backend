@@ -14,6 +14,7 @@ import {
   AssignTicket,
   getAssignedTickets,
   updateAssignedTicketStatus,
+  GetTicktetById
 } from "../controller/ticket.controller.js";
 // Customer create ticket
 
@@ -48,6 +49,7 @@ TicketRouter.patch(
   Authorized("agent"),
   updateAssignedTicketStatus,
 );
+TicketRouter.get("/agent/:id",Protect, GetTicktetById)
 
 // assign to agent
 TicketRouter.patch("/assign",Protect,AssignTicket)

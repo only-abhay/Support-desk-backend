@@ -12,6 +12,7 @@ export async function SendOtpMail(normalizedEmail, otp) {
     }
 
     console.log("Sending OTP to:", normalizedEmail);
+    console.log("Sending OTP to:", otp);
 
     const response = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",

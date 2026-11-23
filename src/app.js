@@ -10,6 +10,7 @@ import TicketRouter from "./router/ticket.router.js";
 import AgentRouter from "./router/agent.router.js";
 import {createServer} from "http"
 import {Server} from "socket.io"
+import ArticleRouter from "./router/article.router.js";
 
 
 const app = express();
@@ -22,7 +23,7 @@ app.use(express.json());
 app.use("/auth", UserRouter);
 app.use("/query", TicketRouter);
 app.use("/agent", AgentRouter);
-
+app.use("/article",ArticleRouter)
 const io = new Server(HttpServer,{
   cors:{
     origin: "http://localhost:3000", 

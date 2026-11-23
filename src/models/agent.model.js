@@ -34,6 +34,10 @@ const agentSchema = new mongoose.Schema(
       type: Number,
       default: 10,
     },
+    isAssigned :{
+      type:Boolean,
+      default:false
+    }
   },
   { timestamps: true },
 );

@@ -15,7 +15,9 @@ const Created = (res, message = "Created", data = null) => {
 };
 
 const NoContent = (res) => {
-  return res.status(204).send();
+   return res.status(204).json({
+    success: false,
+  });
 };
 
 const BadRequest = (res, message = "Bad Request") => {

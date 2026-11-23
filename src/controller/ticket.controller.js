@@ -1,5 +1,6 @@
 import Ticket from "../models/ticket.model.js";
 import Agent from "../models/agent.model.js";
+import AgentModel from "../models/agent.model.js";
 
 // ===============================
 // CREATE TICKET
@@ -9,20 +10,39 @@ export const createTicket = async (req, res) => {
   try {
     const { subject, category, issue, priority } = req.body;
 
+    const agent = await AgentModel.find({
+      isAssigned:false ,status:"active"
+    })
+     let assignAgent = null
+     
+     if(agent !=[]){
+      assignAgent = agent[0]
+     }
+     if(assignAgent !=null){
+      assignAgent = assignAgent._id
+     }
+     
     const ticket = await Ticket.create({
       userId: req.user._id,
       subject,
       category,
       issue,
       priority,
+      assignedTo:assignAgent,
     });
-
+    if(agent !=[] & assignAgent !=null ){
+      await Agent.findByIdAndUpdate(assignAgent,{
+        isAssigned:true,
+      })
+    }
+     
     res.status(201).json({
       success: true,
       message: "Ticket Created Successfully",
       ticket,
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       success: false,
       message: error.message,
@@ -329,7 +349,19 @@ export const addTicketMessage = async (req, res) => {
 
 export const deleteTicket = async (req, res) => {
   try {
+    const MainTicket = await Ticket.findById(req.params.id);
     const ticket = await Ticket.findByIdAndDelete(req.params.id);
+
+   if(MainTicket){
+    const AssignAgent = await Ticket.countDocuments({assignedTo:MainTicket.assignedTo})
+    
+    if(AssignAgent<1){
+      const Agent = await AgentModel.findByIdAndUpdate(MainTicket.assignedTo,{
+        isAssigned:false
+      })
+    }
+   }
+
 
     if (!ticket) {
       return res.status(404).json({
@@ -353,6 +385,15 @@ export const deleteTicket = async (req, res) => {
 export const AssignTicket = async (req, res) => {
   try {
     const { ticketId, agentId } = req.body;
+    // check assign ticket is not more than 10
+    const CountTicket = await Ticket.countDocuments({assignedTo:agentId});
+    if(CountTicket==10){
+        return res.status(403).json({
+        success: false,
+        message: "You cannot assign More than 10 Ticket",
+      });
+    }
+
 
     // Find the ticket by ID
     const ticket = await Ticket.findById(ticketId);
@@ -393,3 +434,15 @@ export const AssignTicket = async (req, res) => {
     });
   }
 };
+
+export const GetTicktetById = async (req,res)=>{
+ try {
+  const assignticket = await Ticket.countDocuments({assignedTo:req.params.id})
+ res.status(200).json({
+      success: true,
+      assignticket
+    });
+ } catch (error) {
+  console.log(error)
+ }
+}
