@@ -15,7 +15,11 @@ import ArticleRouter from "./router/article.router.js";
 
 const app = express();
 const HttpServer = createServer(app)
-const allowedOrigins = [process.env.ORIGIN, "http://localhost:3000"]
+const allowedOrigins = [
+  process.env.ORIGIN,
+  "https://support-desk-frontend-git-main-only-abhays-projects.vercel.app",
+  "http://localhost:3000",
+]
   .filter(Boolean)
   .map((origin) => origin.trim().replace(/\/+$/, ""));
 
