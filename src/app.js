@@ -17,7 +17,7 @@ const app = express();
 const HttpServer = createServer(app)
 
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use(express.json());
 
 app.use("/auth", UserRouter);
@@ -26,7 +26,7 @@ app.use("/agent", AgentRouter);
 app.use("/article",ArticleRouter)
 const io = new Server(HttpServer,{
   cors:{
-    origin: "http://localhost:3000", 
+    origin: process.env.ORIGIN, 
     credentials: true 
   }
 })
